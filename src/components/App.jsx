@@ -1,18 +1,39 @@
-import Profile from "./Profile/Profile";
-import FriendList from "./FriendList/FriendList";
-import TransactionHistory from "./TransactionHistory/TransactionHistory";
-import profileData from "./../assets/profile.json";
-import friendsData from "./../assets/friends.json";
-import transactions from "./../assets/transactions.json";
+import Description from "./Description/Description";
+import Options from "./Options/Options";
+import Feedback from "./Feedback/Feedback";
 import "modern-normalize";
-import "/main.css";
+import { useEffect, useState } from "react";
+import Notification from "./Notification/Notification";
+import fdBackData from "./../assets/feedback.json";
 
 const App = () => {
+  const [feedbackData, setFeedbackData] = useState(
+    () => JSON.parse(localStorage.getItem("feedbackData")) ?? fdBackData
+  );
+
+  useEffect(() => {
+    localStorage.setItem("feedbackData", JSON.stringify(feedbackData));
+  }, [feedbackData]);
+
+  // sum
+  const totalFeedbackData =
+    feedbackData.good + feedbackData.neutral + feedbackData.bad;
+
   return (
     <div className="container">
-      <Profile user={profileData} />
-      <FriendList friends={friendsData} />
-      <TransactionHistory items={transactions} />
+      <Description />
+
+      <Options
+        feedback={feedbackData}
+        setFeedback={setFeedbackData}
+        totalFeedback={totalFeedbackData}
+      />
+
+      {totalFeedbackData === 0 ? (
+        <Notification />
+      ) : (
+        <Feedback feedback={feedbackData} totalFeedback={totalFeedbackData} />
+      )}
     </div>
   );
 };
