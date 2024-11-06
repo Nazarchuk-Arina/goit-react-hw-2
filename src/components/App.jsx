@@ -19,14 +19,31 @@ const App = () => {
   const totalFeedbackData =
     feedbackData.good + feedbackData.neutral + feedbackData.bad;
 
+  const handleClickByOption = (value) => {
+    setFeedbackData((prev) => ({
+      ...prev,
+      [value]: prev[value] + 1,
+    }));
+  };
+
+  const handleReset = () => {
+    const initialFeedback = Object.keys(feedbackData).reduce((acc, option) => {
+      acc[option] = 0;
+      return acc;
+    }, {});
+
+    setFeedbackData(initialFeedback);
+  };
+
   return (
     <div className="container">
       <Description />
 
       <Options
         feedback={feedbackData}
-        setFeedback={setFeedbackData}
         totalFeedback={totalFeedbackData}
+        handleClickFeedback={handleClickByOption}
+        reset={handleReset}
       />
 
       {totalFeedbackData === 0 ? (
